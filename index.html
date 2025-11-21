@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Sohini Music School</title>
+  <style>
+    body { 
+      font-family: Arial, sans-serif; 
+      margin: 0; 
+      background: #fff7ef; 
+      color: #4a2e1f; 
+      position: relative;
+    }
+
+    body::before { 
+      content: "🎵🎶"; 
+      font-size: 50px; 
+      color: rgba(0, 0, 0, 0.05); 
+      position: absolute; 
+      top: 5%; left: 5%; 
+      z-index: 0;
+      animation: watermark 10s linear infinite; 
+      pointer-events: none; /* FIX to allow clicks through */
+    }
+
+    body::after { 
+      content: "🎶🎵"; 
+      font-size: 50px; 
+      color: rgba(0, 0, 0, 0.05); 
+      position: absolute; 
+      top: 20%; left: 15%; 
+      z-index: 0;
+      animation: watermark 10s linear infinite; 
+      pointer-events: none; /* FIX to allow clicks through */
+    }
+
+    @keyframes watermark {
+      0% { opacity: 0.1; }
+      50% { opacity: 0.05; }
+      100% { opacity: 0.1; }
+    }
+
+    header { 
+      background: linear-gradient(135deg, #7a1e27, #b42b39); 
+      color: white; 
+      text-align: center; 
+      padding: 20px 10px; 
+      z-index: 1; 
+      position: relative;
+    }
+
+    nav { 
+      display: flex; 
+      justify-content: center; 
+      background: #fdd9a0; 
+      padding: 10px 0; 
+      z-index: 1; 
+      position: relative;
+    }
+
+    nav a { 
+      margin: 0 12px; 
+      text-decoration: none; 
+      font-weight: bold; 
+      color: #7a1e27; 
+      padding: 8px 14px; 
+      border-radius: 6px; 
+      transition: 0.2s; 
+      cursor: pointer;
+    }
+
+    nav a:hover { 
+      background: #7a1e27; 
+      color: white;
+    }
+
+    .section { 
+      display: none; 
+      padding: 20px; 
+      z-index: 1; 
+      position: relative;
+    }
+
+    .active { 
+      display: block; 
+    }
+
+    table { 
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-top: 15px; 
+      background: #fffaf2;
+    }
+
+    th, td { 
+      padding: 10px; 
+      border: 1px solid #d9c7a5; 
+    }
+
+    th { 
+      background: #b42b39; 
+      color: white;
+    }
+
+    button { 
+      background: #b42b39; 
+      color: white; 
+      border: none; 
+      padding: 5px 10px; 
+      border-radius: 5px; 
+      cursor: pointer; 
+      margin: 2px;
+    }
+
+    button:hover { 
+      background: #7a1e27; 
+    }
+
+    input[type="file"] { 
+      display: block; 
+      margin-top: 10px;
+    }
+
+    .preview img, .preview video { 
+      max-width: 200px; 
+      margin: 5px;
+    }
+
+    .whatsapp-icon {
+      cursor: pointer;
+      width: 28px;
+      height: 28px;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+    }
+
+    .edit-btn-container {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 2;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Sohini Music School</h1>
+  <p>Affiliated under Sastriya Sangeet Kala Parishad</p>
+  <p>Founder: Mrs. Subhra Chakraborty</p>
+</header>
+
+<nav>
+  <a href="#" onclick="showTab('home'); return false;">Home</a>
+  <a href="#" onclick="showTab('students'); return false;">Students</a>
+  <a href="#" onclick="showTab('photos'); return false;">Photos</a>
+  <a href="#" onclick="showTab('videos'); return false;">Videos</a>
+  <a href="#" onclick="showTab('events'); return false;">Events</a>
+</nav>
+
+<!-- Button to enter edit mode -->
+<div class="edit-btn-container">
+  <button id="editBtn" onclick="enterEditMode()">Enter Edit Mode</button>
+  <button id="saveBtn" onclick="saveChanges()" style="display:none;">Save Changes</button>
+</div>
+
+<div id="home" class="section active">
+  <h2>Welcome</h2>
+  <p id="address">Address: 229, Purba Sinthee Bye-lane, Dum Dum (Maidanpally), Kolkata-700030</p>
+  <p id="welcomeMsg">This website showcases the music school activities and students’ progress.</p>
+</div>
+
+<div id="students" class="section">
+  <h2>Students</h2>
+  <table id="studentTable">
+    <tr>
+      <th>Name</th><th>Subject (Current Year)</th><th>Year Joined</th><th>5th Year</th><th>5th Result</th>
+      <th>7th Year</th><th>7th Result</th><th>Phone</th><th>WhatsApp</th><th>Fee Month Paid</th><th>Fee Month Due</th><th>Action</th>
+    </tr>
+  </table>
+  <button onclick="addStudentRow()">Add Student</button>
+</div>
+
+<div id="photos" class="section">
+  <h2>Photos</h2>
+  <input type="file" id="photoInput" accept="image/*" multiple />
+  <div class="preview" id="photoPreview"></div>
+</div>
+
+<div id="videos" class="section">
+  <h2>Videos</h2>
+  <input type="file" id="videoInput" accept="video/*" multiple />
+  <div class="preview" id="videoPreview"></div>
+</div>
+
+<div id="events" class="section">
+  <h2>Events</h2>
+  <ul id="eventList"></ul>
+  <input type="text" id="newEvent" placeholder="New event" />
+  <button onclick="addEvent()">Add Event</button>
+</div>
+
+<script>
+  let editMode = false;
+  const PASSWORD = "sohini123";
+
+  // TAB SWITCHING
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(section => section.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+  }
+
+  // ENTER EDIT MODE
+  function enterEditMode() {
+    let pass = prompt("Enter admin password:");
+    if(pass !== PASSWORD) { 
+      alert("Wrong password!"); 
+      return; 
+    }
+    editMode = true;
+    document.querySelectorAll("#home p").forEach(p => p.contentEditable = true);
+    document.querySelectorAll("#students td").forEach(td => td.contentEditable = true);
+    document.getElementById("saveBtn").style.display = "inline-block";
+    alert("Edit Mode Enabled.");
+  }
+
+  // SAVE CHANGES (placeholder, you can add save functionality here)
+  function saveChanges() {
+    editMode = false;
+    document.querySelectorAll("#home p").forEach(p => p.contentEditable = false);
+    document.querySelectorAll("#students td").forEach(td => td.contentEditable = false);
+    document.getElementById("saveBtn").style.display = "none";
+    alert("Changes saved (not really, add your saving logic).");
+  }
+
+  // ADD STUDENT ROW
+  function addStudentRow() {
+    if(!editMode) { 
+      alert("Enter edit mode first."); 
+      return; 
+    }
+    let table = document.getElementById("studentTable");
+    let row = table.insertRow();
+    for (let i = 0; i < 11; i++) {
+      let cell = row.insertCell();
+      if (i === 8) {
+        let link = document.createElement("a");
+        link.target = "_blank";
+        link.href = "#"; // temporary, can be updated when phone number added
+        let icon = document.createElement("div");
+        icon.className = "whatsapp-icon";
+        link.appendChild(icon);
+        cell.appendChild(link);
+      } else {
+        cell.contentEditable = true;
+      }
+    }
+    // Add action buttons cell (delete)
+    let actionCell = row.insertCell();
+    let delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.onclick = function() { table.deleteRow(row.rowIndex); };
+    actionCell.appendChild(delBtn);
+  }
+
+  // PHOTO PREVIEW
+  document.getElementById("photoInput").addEventListener("change", function(event) {
+    const preview = document.getElementById("photoPreview");
+    preview.innerHTML = ''; // Clear previous
+    const files = event.target.files;
+    Array.from(files).forEach(file => {
+      const img = document.createElement("img");
+      img.src = URL.createObjectURL(file);
+      preview.appendChild(img);
+    });
+  });
+
+  // VIDEO PREVIEW
+  document.getElementById("videoInput").addEventListener("change", function(event) {
+    const preview = document.getElementById("videoPreview");
+    preview.innerHTML = ''; // Clear previous
+    const files = event.target.files;
+    Array.from(files).forEach(file => {
+      const video = document.createElement("video");
+      video.src = URL.createObjectURL(file);
+      video.controls = true;
+      preview.appendChild(video);
+    });
+  });
+
+  // ADD EVENT
+  function addEvent() {
+    if(!editMode) { 
+      alert("Enter edit mode first."); 
+      return; 
+    }
+    const input = document.getElementById("newEvent");
+    const val = input.value.trim();
+    if(val === "") {
+      alert("Please enter an event.");
+      return;
+    }
+    const ul = document.getElementById("eventList");
+    const li = document.createElement("li");
+    li.textContent = val;
+    ul.appendChild(li);
+    input.value = "";
+  }
+</script>
+
+</body>
+</html>
